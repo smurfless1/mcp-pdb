@@ -1,34 +1,31 @@
 # MCP-PDB: Interactive Python Debugging with Claude
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-**MCP-PDB** seamlessly integrates Python's debugger (PDB) with the Claude AI assistant through the Multi-modal Chat Protocol (MCP), empowering you to debug complex Python code through natural language conversation.
+Inspired by microsoft's [debug-gym](https://aka.ms/debug-gym/) and the way providing an LLM with PDB access improved it's performance on various benchmarks, I have found it helpful to give claude code/windsurf access to the python debugger.
+
+**MCP-PDB** provides tools for interactive Python debugging with LLM through the Model Context Protocol (MCP).
 
 ## Key Features
 
-- **Interactive Debugging**: Step through code, inspect variables, and set breakpoints using natural language
-- **Conversational Interface**: Debug with Claude's assistance without memorizing PDB commands
-- **Context-Aware**: Claude understands your code structure and debugging session state
+- **Interactive Debugging**: Allows LLMs to step through code, inspect variables, and set breakpoints using MCP tools.
+- **Conversational Interface**: Debug with Claude or Windsurf's assistance without memorizing PDB commands
+- **Context-Aware**: Tracks your code structure and debugging session state
 - **Smart Breakpoints**: Easily manage breakpoints across files with tracking
 - **Variable Inspection**: Examine complex data structures with detailed insights
 
 ## Getting Started
 
-### Installation
+### Installation in Claude Code
 
 ```bash
-
+claude mcp add mcp-pdb uv run --with mcp-pdb mcp-pdb
 ```
 
 ### Basic Usage
 
-1. Start the MCP server:
-   ```bash
-   mcp-pdb
-   ```
-
-2. Connect with Claude and start debugging:
+1. Connect with LLMs and start debugging:
    ```
    You: Debug my Python script at ~/projects/myapp/main.py
    Claude: I'll start a debugging session for that file. What would you like to focus on?
