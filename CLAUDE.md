@@ -8,11 +8,6 @@ This project is a debugging tool that integrates PDB (Python Debugger) with the 
 - Lint: `uv run ruff check`
 - Type check: `uv run pyright`
 
-## Testing
-- Run tests: `uv run pytest`
-- Test a specific file: `uv run pytest path/to/test_file.py`
-- Debug tests: `uv run pytest --pdb`
-
 ## Development Environment
 
 ### Package Management

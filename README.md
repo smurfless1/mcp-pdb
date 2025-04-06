@@ -18,11 +18,7 @@
 ### Installation
 
 ```bash
-# Install with uv (recommended)
-uv pip install mcp-pdb
 
-# Or with pip
-pip install mcp-pdb
 ```
 
 ### Basic Usage
@@ -36,10 +32,10 @@ pip install mcp-pdb
    ```
    You: Debug my Python script at ~/projects/myapp/main.py
    Claude: I'll start a debugging session for that file. What would you like to focus on?
-   
+
    You: Set a breakpoint on line 42 and run until there
    Claude: [Sets breakpoint and runs] Execution paused at line 42. Here's the current context...
-   
+
    You: What's the value of user_data?
    Claude: The variable user_data is a dictionary with 3 keys: 'name', 'age', and 'preferences'...
    ```
@@ -53,6 +49,7 @@ pip install mcp-pdb
 - "Show me all local variables"
 - "Continue execution until the next breakpoint"
 - "Explain what's happening in this function"
+- "Run pytest with debugging to fix test_<function_name>"
 
 ## Advanced Features
 
