@@ -749,7 +749,7 @@ def list_breakpoints() -> str:
                     tracked_bps_formatted.append(f"{disp_path}:{line_num} (BP #{bp_data['bp_number']})")
                 else:
                     tracked_bps_formatted.append(f"{disp_path}:{line_num}")
-        return f"No active PDB session or project root unknown.\n\n--- Tracked Breakpoints ---\n" + ('\n'.join(tracked_bps_formatted) if tracked_bps_formatted else "None")
+        return "No active PDB session or project root unknown.\n\n--- Tracked Breakpoints ---\n" + ('\n'.join(tracked_bps_formatted) if tracked_bps_formatted else "None")
 
 
     pdb_response = send_to_pdb("b")
@@ -809,7 +809,7 @@ def restart_debug() -> str:
        except queue.Empty: break
 
     # Start a new session using stored parameters
-    print(f"Calling start_debug for restart...")
+    print("Calling start_debug for restart...")
     start_result = start_debug(file_path=file_to_debug, use_pytest=use_pytest_flag, args=args_to_use)
 
     # Note: Breakpoints are now restored within start_debug using the tracked 'breakpoints' dict
@@ -843,7 +843,7 @@ def examine_variable(variable_name: str) -> str:
 
     # Attributes/methods using dir(), protect with try-except in PDB
     dir_command = f"import inspect; print(dir({variable_name}))" # More robust than just dir()
-    print(f"Sending command: (inspect dir)")
+    print("Sending command: (inspect dir)")
     dir_info = send_to_pdb(dir_command)
     if not pdb_running and "Session ended" not in type_info :
          return f"Value:\n{basic_info}\n\nType:\n{type_info}\n\nSession ended after 'dir()'. Dir Output:\n{dir_info}"
@@ -913,7 +913,7 @@ def get_debug_status() -> str:
              current_loc_output += "\n -- Session ended during status check --"
 
 
-    return f"--- Debug Session Status ---\n" + \
+    return "--- Debug Session Status ---\n" + \
            f"Running: {status['running']}\n" + \
            f"PID: {status['process_id']}\n" + \
            f"Project Root: {status['project_root']}\n" + \
@@ -922,7 +922,7 @@ def get_debug_status() -> str:
            f"Arguments: '{status['arguments']}'\n" + \
            f"Tracked Breakpoints: {status['tracked_breakpoints'] or 'None'}\n\n" + \
            f"-- Current PDB Location --\n{current_loc_output}\n" + \
-           f"--- End Status ---"
+           "--- End Status ---"
 
 
 @mcp.tool()
