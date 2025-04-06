@@ -1,6 +1,6 @@
 [project]
 name = "mcp-pdb"
-version = "0.1.0"
+version = "0.2.0"
 description = "MCP to use the python debugger, inspired by debug-gym"
 readme = "README.md"
 authors = [
@@ -8,6 +8,16 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = ["mcp[cli]>=1.6.0"]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[[project.authors]]
+name = "samefarrar"
+email = "samefarrar@gmail.com"
 
 [project.scripts]
 mcp-pdb = "mcp_pdb:main"
