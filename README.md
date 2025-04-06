@@ -7,6 +7,7 @@ Inspired by microsoft's [debug-gym](https://aka.ms/debug-gym/) and the way provi
 
 **MCP-PDB** provides tools for interactive Python debugging with LLM through the Model Context Protocol (MCP).
 
+**Works best with [UV](https://github.com/astral-sh/uv)!**
 
 ## ⚠️ Security Warnings
 
