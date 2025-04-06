@@ -11,6 +11,8 @@ This tool executes Python code through the debugger. Use in trusted environments
 
 ## Installation
 
+Works best with [uv](https://docs.astral.sh/uv/getting-started/features/)
+
 ### Claude Code
 ```bash
 claude mcp add mcp-pdb uv run --with mcp-pdb mcp-pdb
