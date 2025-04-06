@@ -7,6 +7,15 @@ Inspired by microsoft's [debug-gym](https://aka.ms/debug-gym/) and the way provi
 
 **MCP-PDB** provides tools for interactive Python debugging with LLM through the Model Context Protocol (MCP).
 
+
+```
+## ⚠️ Security Warnings
+
+- **Code Execution**: The debugger necessarily executes Python code. This means that it can run arbitrary code in the pdb environment. This could include deleting files, modifying system settings, or accessing sensitive information.
+- **Command Injection**: While MCP-PDB implements input sanitization, sophisticated attacks could potentially be crafted. Review commands before execution.
+- **LLM Suggestions**: Be cautious with debugging commands suggested by LLMs, as they could execute harmful code.
+```
+
 ## Key Features
 
 - **Interactive Debugging**: Allows LLMs to step through code, inspect variables, and set breakpoints using MCP tools.
