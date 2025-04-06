@@ -32,6 +32,24 @@ Inspired by microsoft's [debug-gym](https://aka.ms/debug-gym/) and the way provi
 claude mcp add mcp-pdb uv run --with mcp-pdb mcp-pdb
 ```
 
+### Installation in windsurf
+
+```json
+{
+  "mcpServers": {
+    "mcp-pdb": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "mcp-pdb",
+        "mcp-pdb"
+      ]
+    }
+  }
+}
+```
+
 ### Basic Usage
 
 1. Connect with LLMs and start debugging:
