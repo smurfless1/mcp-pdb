@@ -15,7 +15,13 @@ Works best with [uv](https://docs.astral.sh/uv/getting-started/features/)
 
 ### Claude Code
 ```bash
-claude mcp add mcp-pdb uv run --with mcp-pdb mcp-pdb
+# Install the MCP server
+claude mcp add mcp-pdb -- uv run --with mcp-pdb mcp-pdb
+
+# Alternative: Install with specific Python version
+claude mcp add mcp-pdb -- uv run --python 3.13 --with mcp-pdb mcp-pdb
+
+# Note: The -- separator is required for Claude Code CLI
 ```
 
 ### Windsurf
@@ -71,6 +77,33 @@ claude mcp add mcp-pdb uv run --with mcp-pdb mcp-pdb
 - Automatic breakpoint tracking and restoration between sessions
 - Works with UV package manager
 - Variable inspection with type information and attribute listing
+
+## Troubleshooting
+
+### Claude Code Installation Issues
+
+If you encounter an error like:
+```
+MCP server "mcp-pdb" Connection failed: spawn /Users/xxx/.local/bin/uv run --python 3.13 --with mcp-pdb mcp-pdb ENOENT
+```
+
+Make sure to include the `--` separator when using `claude mcp add`:
+```bash
+# ✅ Correct
+claude mcp add mcp-pdb -- uv run --with mcp-pdb mcp-pdb
+
+# ❌ Incorrect (missing --)
+claude mcp add mcp-pdb uv run --with mcp-pdb mcp-pdb
+```
+
+To verify your installation:
+```bash
+# Check if mcp-pdb is listed
+claude mcp list | grep mcp-pdb
+
+# Check server status in Claude Code
+# Type /mcp in Claude Code to see connection status
+```
 
 ## License
 
