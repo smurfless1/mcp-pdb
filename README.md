@@ -17,6 +17,8 @@ Works best with [uv](https://docs.astral.sh/uv/getting-started/features/)
 ```bash
 # Install the MCP server
 claude mcp add mcp-pdb -- uv run --with mcp-pdb mcp-pdb
+# or for poetry
+claude mcp add mcp-pdb -- poetry run mcp-pdb
 
 # Alternative: Install with specific Python version
 claude mcp add mcp-pdb -- uv run --python 3.13 --with mcp-pdb mcp-pdb
@@ -25,6 +27,7 @@ claude mcp add mcp-pdb -- uv run --python 3.13 --with mcp-pdb mcp-pdb
 ```
 
 ### Windsurf
+
 ```json
 {
   "mcpServers": {
@@ -34,6 +37,24 @@ claude mcp add mcp-pdb -- uv run --python 3.13 --with mcp-pdb mcp-pdb
         "run",
         "--with",
         "mcp-pdb",
+        "mcp-pdb"
+      ]
+    }
+  }
+}
+
+```
+
+Or for poetry:
+
+```json
+        
+{
+  "mcpServers": {
+    "mcp-pdb": {
+      "command": "poetry",
+      "args": [
+        "run",
         "mcp-pdb"
       ]
     }

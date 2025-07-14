@@ -482,7 +482,7 @@ def start_debug(file_path: str, use_pytest: bool = False, args: str = "") -> str
 
         # --- Wait for Initial Output & Verify Start ---
         print("Waiting for PDB to start...")
-        initial_output = get_pdb_output(timeout=3.0) # Longer timeout for potentially slow starts/imports
+        initial_output = get_pdb_output(timeout=30.0) # Longer timeout for potentially slow starts/imports
 
         # Check if process died immediately
         if pdb_process.poll() is not None:
