@@ -33,28 +33,56 @@ examine_variable("variable_name")
 
 ### 2. Test Debugging (Recommended Approaches)
 
-#### For debugging failing tests:
+#### For debugging tests:
+```
+start_debug(file_path="test_file.py", use_pytest=True, pytest_debug_mode="trace", args="-k test_function_name")
+```
+- **Recommended for debugging passing tests**
+- Stops at the beginning of the test execution
+- Allows you to set breakpoints and inspect variables during normal execution
+- Always specify the specific test with `-k test_name` to avoid stepping through multiple tests
+
+#### For debugging tests to stop on failures:
 ```
 start_debug(file_path="test_file.py", use_pytest=True, pytest_debug_mode="pdb")
 ```
 - Debugger activates only when tests fail
 - Good for investigating test failures
 
-#### For debugging specific test execution:
+#### For complex test debugging scenarios:
 ```
 start_debug(file_path="test_file.py", use_pytest=True, pytest_debug_mode="manual", args="-k test_function_name")
 ```
-- **Recommended for most test debugging**
-- Gives you full control to set breakpoints before tests run
-- Only stops at your specific breakpoints, not every test
-- Best for debugging test suites and catching specific code paths
+- Full control but requires test failures to activate debugger
+- Better for debugging test setup/teardown issues
+- **Note:** This mode only works effectively with failing tests
 
-#### For step-by-step test debugging:
+### 3. Variable Inspection Workflow
+
+1. Start debugging with trace mode for non-failing tests
+2. Set breakpoints at key lines using `set_breakpoint()`
+3. Continue to breakpoint with `send_pdb_command("c")`
+4. Step through execution with `send_pdb_command("n")` (next line)
+5. Examine variables with `examine_variable("variable_name")`
+6. Use `send_pdb_command("p variable.attribute")` for quick checks
+
+**Example:**
+```python
+# Debug a specific test
+start_debug("test/test_api.py", use_pytest=True, pytest_debug_mode="trace", args="-k test_user_login")
+
+# Set breakpoint at the line you want to inspect
+set_breakpoint("test/test_api.py", line_number=47)
+
+# Continue to breakpoint
+send_pdb_command("c")
+
+# Execute the line you want to debug
+send_pdb_command("n")
+
+# Examine the result
+examine_variable("response")
 ```
-start_debug(file_path="test_file.py", use_pytest=True, pytest_debug_mode="trace")
-```
-- Debugger activates at the start of each test
-- Only use for debugging individual tests (not test suites)
 
 ## Common PDB Commands
 
@@ -81,32 +109,49 @@ MCP-PDB automatically detects and works with:
 
 ## Best Practices
 
-1. **Always use `pytest_debug_mode="manual"`** when debugging test suites - it gives you the most control
-2. **Set breakpoints before continuing** - use `set_breakpoint()` then `send_pdb_command("c")`
-3. **Use `examine_variable()`** for detailed variable inspection instead of basic `p` commands
-4. **Check `get_debug_status()`** if you're unsure about the debugging session state
-5. **End sessions cleanly** with `end_debug()` when done
+1. **For variable inspection during tests**: Use `pytest_debug_mode="trace"` with `-k test_name`
+2. **For failing tests**: Use `pytest_debug_mode="pdb"`
+3. **Prefer to target specific tests** with `-k test_name` to avoid stepping through entire test suites
+4. **Set breakpoints immediately** after starting the debug session
+5. **Use `examine_variable()`** for comprehensive variable inspection
+6. **Use `send_pdb_command("n")`** to step through line by line
+7. **End sessions cleanly** with `end_debug()` when done
 
 ## Troubleshooting
 
+### Common Issues
+
+**Test exits immediately without stopping:**
+- For passing tests, use `pytest_debug_mode="trace"` instead of `"manual"` or `"pdb"`
+- Always include `-k test_name` to target specific tests
+- The `"pdb"` mode only activates on test failures
+
+**Breakpoints not hit:**
+- Ensure you're using `pytest_debug_mode="trace"` for non-failing tests
+- Set breakpoints after the debugger starts but before continuing execution
+- Verify file paths are correct (use absolute paths or relative to project root)
+
+**General troubleshooting:**
 - If debugging won't start, check that the file path exists and is executable
-- For test debugging issues, try `pytest_debug_mode="manual"` for maximum control
 - Use `get_debug_status()` to check if a session is already running
 - If breakpoints aren't working, ensure you're using absolute paths or paths relative to the project root
 
 ## Example Debugging Session
 
 ```
-# Start debugging with full control
-start_debug(file_path="test/test_api.py", use_pytest=True, pytest_debug_mode="manual", args="-k test_user_login")
+# Start debugging with trace mode for a passing test
+start_debug(file_path="test/test_api.py", use_pytest=True, pytest_debug_mode="trace", args="-k test_user_login")
 
 # Set a breakpoint in the code you want to debug
-set_breakpoint(file_path="src/auth.py", line_number=45)
+set_breakpoint(file_path="test/test_api.py", line_number=45)
 
 # Continue execution to the breakpoint
 send_pdb_command("c")
 
-# Examine variables when stopped at breakpoint
+# Step to the next line to execute the line you want to inspect
+send_pdb_command("n")
+
+# Examine variables when stopped at the line
 examine_variable("user_data")
 examine_variable("request")
 
