@@ -227,6 +227,20 @@ def find_venv_details(project_root):
     return None, None
 
 
+def has_poetry_config(project_root):
+    """Check if project has Poetry configuration in pyproject.toml"""
+    pyproject_path = os.path.join(project_root, "pyproject.toml")
+    if not os.path.exists(pyproject_path):
+        return False
+    
+    try:
+        with open(pyproject_path, 'r') as f:
+            content = f.read()
+            return '[tool.poetry]' in content
+    except (IOError, OSError):
+        return False
+
+
 def sanitize_arguments(args_str):
     """Validate and sanitize command line arguments to prevent injection."""
     dangerous_patterns = [';', '&&', '||', '`', '$(', '|', '>', '<']
@@ -310,7 +324,9 @@ def start_debug(file_path: str, use_pytest: bool = False, args: str = "") -> str
     try:
         # --- Determine Execution Environment ---
         use_uv = False
+        use_poetry = False
         uv_path = shutil.which("uv")
+        poetry_path = shutil.which("poetry")
         venv_python_path = None
         venv_bin_dir = None
 
@@ -320,13 +336,24 @@ def start_debug(file_path: str, use_pytest: bool = False, args: str = "") -> str
                  print("Found uv.lock, assuming uv project.")
                  use_uv = True
             else:
-                 # Optional: Could check pyproject.toml for [tool.uv]
-                 print("Found pyproject.toml and uv executable, tentatively trying uv.")
-                 # We'll let `uv run` determine if it's actually a uv project.
-                 use_uv = True # Tentatively true
+                 # Check pyproject.toml for [tool.uv] configuration
+                 try:
+                     with open(os.path.join(project_root, "pyproject.toml"), 'r') as f:
+                         content = f.read()
+                         if '[tool.uv]' in content:
+                             print("Found [tool.uv] in pyproject.toml, assuming uv project.")
+                             use_uv = True
+                 except (IOError, OSError):
+                     pass
 
-        if not use_uv:
-            # Look for a standard venv if uv isn't detected/used
+        if not use_uv and poetry_path and os.path.exists(os.path.join(project_root, "pyproject.toml")):
+            # Check for Poetry-specific indicators
+            if os.path.exists(os.path.join(project_root, "poetry.lock")) or has_poetry_config(project_root):
+                print("Found Poetry project")
+                use_poetry = True
+
+        if not use_uv and not use_poetry:
+            # Look for a standard venv if uv or poetry isn't detected/used
             venv_python_path, venv_bin_dir = find_venv_details(project_root)
 
         # --- Prepare Command and Subprocess Environment ---
@@ -366,6 +393,18 @@ def start_debug(file_path: str, use_pytest: bool = False, args: str = "") -> str
             else:
                 base_cmd.extend(["python", "-m", "pdb"])
             cmd = base_cmd + [rel_file_path] + parsed_args
+        elif use_poetry:
+            print(f"Using poetry run in: {project_root}")
+            # Clean potentially conflicting env vars for poetry run
+            env.pop('VIRTUAL_ENV', None)
+            env.pop('PYTHONHOME', None)
+            base_cmd = ["poetry", "run", "python", "-m"]
+            if use_pytest:
+                # -s: show stdout/stderr, --pdbcls: use standard pdb
+                base_cmd.extend(["pytest", "--pdb", "-s", "--pdbcls=pdb:Pdb"])
+            else:
+                base_cmd.extend(["pdb"])
+            cmd = base_cmd + [rel_file_path] + parsed_args
         elif venv_python_path:
             print(f"Using venv Python: {venv_python_path}")
             venv_dir = os.path.dirname(os.path.dirname(venv_bin_dir)) # Get actual venv root
@@ -395,7 +434,7 @@ def start_debug(file_path: str, use_pytest: bool = False, args: str = "") -> str
             else:
                 cmd = [venv_python_path, "-m", "pdb", rel_file_path] + parsed_args
         else:
-            print("Warning: No uv or standard venv detected in project root. Using system Python/pytest.")
+            print("Warning: No uv, poetry, or standard venv detected in project root. Using system Python/pytest.")
             # Fallback to system python/pytest found in PATH
             python_exe = shutil.which("python") or sys.executable # Find system python more reliably
             if not python_exe:
